@@ -1,7 +1,0 @@
-#define SUNDAY "Sunday"
-#define MONDAY "Monday"
-#define TUESDAY "Tuesday"
-#define WEDNESDAY "Wednesday"
-#define THURSDAY "Thursday"
-#define FRIDAY "Friday"
-#define SATURDAY "Saturday"

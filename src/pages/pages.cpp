@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <EasyButton.h>
 #include <Mokosh.hpp>
+#include "ota.hpp"
 #include "pages.hpp"
 
 int8_t page = 0;
@@ -24,6 +25,11 @@ void actionMokoshConnect()
     mokosh->setupRemoteDebug();
     mokosh->setupMqttClient();
     mokosh->hello();
+
+    mokosh->otaEvents.onStart = onOtaStarted;
+    mokosh->otaEvents.onProgress = onOtaProgress;
+    mokosh->setupOta();    
+
     msgSuccess("Finished");
 
     sleepy = false;
@@ -85,11 +91,11 @@ void showPage()
   {
   case 0:
     max_time_out = 8000;
-    pageClock(initialLoad);
+    pageAndroClock(initialLoad);
     break;
   case 1:
     max_time_out = 15000;
-    pageAndroClock(initialLoad);
+    pageClock(initialLoad);
     break;
   case 2:
     max_time_out = 15000;

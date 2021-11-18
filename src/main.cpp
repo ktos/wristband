@@ -7,8 +7,10 @@
 #include "clock.hpp"
 #include "pages.hpp"
 #include "mpu.hpp"
+#include "unattended.hpp"
 
 Mokosh m;
+bool unattended = false;
 
 void setup()
 {
@@ -25,29 +27,63 @@ void setup()
   // happiness to the people.
   m.begin("Ataksak", false);
 
+  esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
+  if (cause == ESP_SLEEP_WAKEUP_TIMER)
+  {
+    mdebugV("Waking up because of timer, enabling unattended mode");
+    unattended = true;
+  }
+
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
   Wire.setClock(400000);
 
   // update local time from RTC
-  mdebugV("Setting up RTC");
+  mdebugD("Setting up RTC");
   initClock();
-  tftInit();
+
+  if (!unattended)
+  {
+    mdebugD("Initializing TFT");
+    tftInit();
+  }
+
   btStop();
 
-  mdebugV("Setting up ADC");
+  mdebugD("Setting up ADC");
   setupADC();
 
-  mdebugV("Setting up MPU to sleep until needed");
+  mdebugD("Setting up MPU to sleep until needed");
   mpuDeepSleep();
 
-  initButton();
+  if (!unattended)
+  {
+    mdebugD("Initializing buttons");
+    initButton();
+  }
 
-  setupBattery();  
+  mdebugD("Initializing battery ADC");
+  setupBattery();
+
+  if (unattended)
+  {
+    mdebugV("Initializing unattended mode");
+    unattendedInit();
+  }
+
+  mdebugV("Go!");
 }
 
 void loop()
 {
-  handleUi();
-  updateBatteryChargeStatus();
+  if (!unattended)
+  {
+    handleUi();
+    updateBatteryChargeStatus();
+  }
+  else
+  {
+    unattendedLoop();
+  }
+
   m.loop();
 }

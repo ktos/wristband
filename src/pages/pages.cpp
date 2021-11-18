@@ -2,6 +2,7 @@
 #include <EasyButton.h>
 #include <Mokosh.hpp>
 #include "ota.hpp"
+#include "sleep.hpp"
 #include "pages.hpp"
 
 int8_t page = 0;
@@ -28,7 +29,7 @@ void actionMokoshConnect()
 
     mokosh->otaEvents.onStart = onOtaStarted;
     mokosh->otaEvents.onProgress = onOtaProgress;
-    mokosh->setupOta();    
+    mokosh->setupOta();
 
     msgSuccess("Finished");
 
@@ -49,7 +50,6 @@ void initButton()
   digitalWrite(TP_PWR_PIN, HIGH);
   tp_button.begin();
   tp_button.onPressedFor(1000, handleAction);
-  tp_button.onSequence(3, 700, actionMokoshConnect);
   tp_button.onPressed(increasePage);
   page = 0;
   showPage();
@@ -59,7 +59,7 @@ void handleUi()
 {
   if (millis() - time_out > max_time_out && !handlingAction && sleepy)
   {
-    handleSleep(false);
+    handleSleep();
   }
   else
   {

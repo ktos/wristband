@@ -13,7 +13,6 @@
 void handleUi();
 void increasePage();
 void showPage();
-void handleSleep(bool showMsg = true);
 void initButton();
 void handleAction();
 void initMokosh(Mokosh* m);

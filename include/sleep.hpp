@@ -4,4 +4,4 @@
 #include "mpu.hpp"
 #include "clock.hpp"
 
-void handleSleep(bool showMsg);
+void handleSleep(bool showMsg = false);

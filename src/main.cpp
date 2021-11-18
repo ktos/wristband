@@ -1,33 +1,53 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <rom/rtc.h>
+#include <WiFi.h>
+#include <Mokosh.hpp>
 #include "wristband-tft.hpp"
-#include "wristband-ota.hpp"
 #include "clock.hpp"
 #include "pages.hpp"
 #include "mpu.hpp"
 
+Mokosh m;
+
 void setup()
 {
-  Serial.begin(115200);
+  m.setDebugLevel(DebugLevel::VERBOSE)
+      ->setForceWiFiReconnect(false)
+      ->setHeartbeat(false)
+      ->setIgnoreConnectionErrors(true)
+      ->setOta(true)
+      ->setRebootOnError(true);
+
+  // ATAKSAK
+  // a goddess in Inuit mythology. She is the ruler of the sky,
+  // and represents the light in the world that brings joy and
+  // happiness to the people.
+  m.begin("Ataksak", false);
+
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
   Wire.setClock(400000);
+
+  // update local time from RTC
+  mdebugV("Setting up RTC");
   initClock();
   tftInit();
-  deactivateWifi();
   btStop();
+
+  mdebugV("Setting up ADC");
   setupADC();
-#ifndef IMU_SKIP
-  initMPU();
-#else
+
+  mdebugV("Setting up MPU to sleep until needed");
   mpuDeepSleep();
-#endif
+
   initButton();
-  setupBattery();
+
+  setupBattery();  
 }
 
 void loop()
 {
   handleUi();
   updateBatteryChargeStatus();
+  m.loop();
 }

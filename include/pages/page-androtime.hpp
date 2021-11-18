@@ -1,8 +1,7 @@
 #include <Arduino.h>
+#include <AndroTime.h>
 #include "clock.hpp"
 #include "ntp.hpp"
 #include "wristband-tft.hpp"
 
-void pageClock(bool initialLoad);
-void pageRtc(bool initialLoad);
-void actionClock();
+void pageAndroClock(bool initialLoad);

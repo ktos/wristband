@@ -3,6 +3,8 @@
 
 MPU9250 IMU;
 
+bool isInit = false;
+
 void initMPU()
 {
   byte c = IMU.readByte(MPU9250_ADDRESS, WHO_AM_I_MPU9250);
@@ -12,6 +14,13 @@ void initMPU()
     IMU.initAK8963(IMU.magCalibration);
     getMagBiasEEPROM(IMU.magbias);
   }
+
+  isInit = true;
+}
+
+bool isMpuInitialized()
+{
+  return isInit;
 }
 
 void mpuSleep()
@@ -83,9 +92,9 @@ float getTemperature()
 // Based on example code by Kris Winer at https://github.com/kriswiner/MPU9250/issues/162#issuecomment-336604802
 void mpuDeepSleep()
 {
-  IMU.writeByte(MPU9250_ADDRESS, PWR_MGMT_1, IMU.readByte(MPU9250_ADDRESS, PWR_MGMT_1) | 0x40); // set sleep mode bit(6), disable all sensors
-  delay(100); // wait for all registers to reset
-  IMU.writeByte(AK8963_ADDRESS, AK8963_CNTL, IMU.readByte(AK8963_ADDRESS, AK8963_CNTL) & ~(0x0F) ); // clear bits 0 to 3 to power down magnetometer
-  IMU.writeByte(MPU9250_ADDRESS, PWR_MGMT_1, IMU.readByte(MPU9250_ADDRESS, PWR_MGMT_1) | 0x10); // write bit 4 to enable gyro standby
-  delay(10); // wait for all registers to reset
+  IMU.writeByte(MPU9250_ADDRESS, PWR_MGMT_1, IMU.readByte(MPU9250_ADDRESS, PWR_MGMT_1) | 0x40);    // set sleep mode bit(6), disable all sensors
+  delay(100);                                                                                      // wait for all registers to reset
+  IMU.writeByte(AK8963_ADDRESS, AK8963_CNTL, IMU.readByte(AK8963_ADDRESS, AK8963_CNTL) & ~(0x0F)); // clear bits 0 to 3 to power down magnetometer
+  IMU.writeByte(MPU9250_ADDRESS, PWR_MGMT_1, IMU.readByte(MPU9250_ADDRESS, PWR_MGMT_1) | 0x10);    // write bit 4 to enable gyro standby
+  delay(10);                                                                                       // wait for all registers to reset
 }

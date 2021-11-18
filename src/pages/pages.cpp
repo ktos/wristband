@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <EasyButton.h>
+#include <Mokosh.hpp>
 #include "pages.hpp"
 
 int8_t page = 0;
@@ -8,6 +9,33 @@ uint32_t time_out = millis();
 uint16_t max_time_out = 15000;
 bool handlingAction = false;
 bool initialLoad = true;
+bool sleepy = true; // princess in a demonic castle
+
+void actionMokoshConnect()
+{
+  if (sleepy)
+  {
+    Mokosh *mokosh = Mokosh::getInstance();
+
+    msgInfo("Setting up Mokosh", "Not sleepy");
+    mdebugV("Setting up Wi-Fi connection");
+    mokosh->setupWiFiClient();
+    mokosh->connectWifi();
+    mokosh->setupRemoteDebug();
+    mokosh->setupMqttClient();
+    mokosh->hello();
+    msgSuccess("Finished");
+
+    sleepy = false;
+  }
+  else
+  {
+    msgInfo("Sleepy...", "Mokosh disabled");
+    sleepy = true;
+  }
+
+  delay(500);
+}
 
 void initButton()
 {
@@ -15,6 +43,7 @@ void initButton()
   digitalWrite(TP_PWR_PIN, HIGH);
   tp_button.begin();
   tp_button.onPressedFor(1000, handleAction);
+  tp_button.onSequence(3, 700, actionMokoshConnect);
   tp_button.onPressed(increasePage);
   page = 0;
   showPage();
@@ -22,7 +51,7 @@ void initButton()
 
 void handleUi()
 {
-  if (millis() - time_out > max_time_out && !handlingAction)
+  if (millis() - time_out > max_time_out && !handlingAction && sleepy)
   {
     handleSleep(false);
   }
@@ -43,6 +72,13 @@ void increasePage()
   initialLoad = true;
 }
 
+void startPage()
+{
+  time_out = millis();
+  page = 0;
+  initialLoad = true;
+}
+
 void showPage()
 {
   switch (page)
@@ -53,34 +89,38 @@ void showPage()
     break;
   case 1:
     max_time_out = 15000;
-    pageRtc(initialLoad);
+    pageAndroClock(initialLoad);
     break;
   case 2:
     max_time_out = 15000;
     pageBattery(initialLoad);
     break;
   case 3:
-#ifndef IMU_SKIP
     max_time_out = 60000;
     pageBearing(initialLoad);
     break;
-#else
-    page++;
-#endif
   case 4:
-#ifndef IMU_SKIP
     max_time_out = 30000;
     pageTemperature(initialLoad);
     break;
-#else
-    page++;
-#endif
   case 5:
-    max_time_out = 15000;
-    pageOta(initialLoad);
+    max_time_out = 30000;
+    pageWifiScan(initialLoad);
     break;
   case 6:
-    handleSleep();
+    max_time_out = 30000;
+    pageMatrix(initialLoad);
+    break;
+  case 7:
+    if (sleepy)
+    {
+      handleSleep();
+    }
+    else
+    {
+      startPage();
+      return;
+    }
     break;
   }
   initialLoad = false;
@@ -93,24 +133,19 @@ void handleAction()
   switch (page)
   {
   case 0:
-    actionClock();
+    actionMokoshConnect();
     break;
   case 1:
     actionClock();
     break;
-  case 2:
-    waitOta();
-    break;
   case 3:
-#ifndef IMU_SKIP
     actionBearing();
-#endif
     break;
   case 5:
-    waitOta();
-    page = 0;
+    actionWifiScan();
     break;
   }
+
   time_out = millis();
   handlingAction = false;
   initialLoad = true;

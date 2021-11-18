@@ -18,12 +18,37 @@ void rtcSleep()
   rtc.disableAlarm();
   rtc.disableCLK();
   rtc.disableTimer();
+  rtc.syncToSystem();
 }
 
 RTC_Date getClockTime()
 {
   RTC_Date now = rtc.getDateTime();
   return now;
+}
+
+time_t getClockUnixTime()
+{
+  RTC_Date now = rtc.getDateTime();
+  tm timeStructure;
+  timeStructure.tm_hour = now.hour;
+  timeStructure.tm_min = now.minute;
+  timeStructure.tm_sec = now.second;
+  timeStructure.tm_mday = now.day;
+  timeStructure.tm_mon = now.month - 1;
+  timeStructure.tm_year = now.year - 1900;
+  timeStructure.tm_isdst = -1;
+  if (isDST(now))
+  {
+    timeStructure.tm_hour = timeStructure.tm_hour - 2;
+  }
+  else
+  {
+    timeStructure.tm_hour = timeStructure.tm_hour - 1;
+  }
+  time_t gmtTime = mktime(&timeStructure);
+
+  return gmtTime;
 }
 
 RTC_Date getUTCTime()

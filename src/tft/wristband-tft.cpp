@@ -140,7 +140,7 @@ void clearScreen()
 void displayDate(const uint8_t day, const uint8_t month, const uint16_t year, bool utc)
 {
   char date[11] = " ";
-  sprintf(date, "%02u/%02u/%u", day, month, year);
+  sprintf(date, "%u-%02u-%02u", year, month, day);
   tft.setTextDatum(TL_DATUM);
   tft.setTextColor(TFT_GREEN, TFT_BLACK);
   tft.setCursor(8, 65);
@@ -149,6 +149,17 @@ void displayDate(const uint8_t day, const uint8_t month, const uint16_t year, bo
   {
     tft.print(" **UTC**");
   }
+}
+
+void displayAndroDate(andro_time_t result)
+{
+  char buffer2[] = "00 flosek";
+  snprintf(buffer2, 10, "%d %s", result.tay, AndroTime.getMonthName(result.month).c_str());
+
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.setCursor(8, 60);
+  tft.print(buffer2);
 }
 
 uint16_t displayHour(const uint8_t hour, const uint8_t minute, bool utc)
@@ -287,4 +298,23 @@ void refreshDrawTemperature(float temperature)
   tft.setTextDatum(TC_DATUM);
   tft.setTextColor(TFT_RED, TFT_BLACK);
   tft.drawString(temperatureText, tft.width() / 2, 5, 7);
+}
+
+void beginPrintln(uint16_t color)
+{
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextSize(1);
+  tft.setTextColor(color, TFT_BLACK);
+  tft.setCursor(0, 0);
+}
+
+void println(char *message)
+{
+  tft.println(message);
+}
+
+TFT_eSPI* getTft()
+{
+  return &tft;
 }

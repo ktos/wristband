@@ -14,8 +14,7 @@ void pageClock(bool initialLoad)
 {
   RTC_Date current;
   if (initialLoad)
-  {
-    deactivateWifi();
+  {    
     clearScreen();
     current = getClockTime();
     displayDate(current.day, current.month, current.year, false);
@@ -47,8 +46,7 @@ void pageRtc(bool initialLoad)
 {
   RTC_Date current;
   if (initialLoad)
-  {
-    deactivateWifi();
+  {    
     clearScreen();
     current = getUTCTime();
     displayDate(current.day, current.month, current.year, true);
@@ -77,11 +75,9 @@ void pageRtc(bool initialLoad)
 }
 
 void actionClock()
-{
-  activateWifi();
+{  
   msgInfo("UPDATING TIME...");
-  setTime(syncTime());
-  deactivateWifi();
+  setTime(syncTime());  
   msgSuccess("TIME UPDATED");
   sleep(3);
 }

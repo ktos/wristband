@@ -6,8 +6,7 @@ void pageTemperature(bool initialLoading)
 {
 
   if (initialLoading)
-  {
-    deactivateWifi();
+  {    
     initDrawTemperature();
     initMPU();
   }

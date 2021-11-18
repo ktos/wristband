@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <hal.hpp>
+#include <AndroTime.h>
 
 #define SEG7_BACKGROUND 0x0821
 
@@ -31,3 +32,7 @@ void initDrawBearing();
 void refreshDrawBearing(int16_t bearing);
 void initDrawTemperature();
 void refreshDrawTemperature(float temperature);
+void displayAndroDate(andro_time_t result);
+void beginPrintln(uint16_t color);
+void println(char *message);
+TFT_eSPI* getTft();

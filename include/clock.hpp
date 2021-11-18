@@ -10,3 +10,4 @@ RTC_Date getClockTime();
 RTC_Date getUTCTime();
 void setTime(RTC_Date datetime);
 bool isDST(RTC_Date now);
+time_t getClockUnixTime();

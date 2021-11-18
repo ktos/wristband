@@ -5,8 +5,11 @@ uint32_t timeBearing = millis();
 void pageBearing(bool initialLoading)
 {
   if (initialLoading)
-  {
-    deactivateWifi();
+  {    
+    if (!isMpuInitialized()) {
+      initMPU();
+    }
+    
     initDrawBearing();
   }
   if (millis() - timeBearing > 300)

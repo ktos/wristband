@@ -1,4 +1,5 @@
 #include "wristband-tft.hpp"
+#include "AndroDesaho.h"
 
 TFT_eSPI tft = TFT_eSPI();
 
@@ -8,6 +9,7 @@ void tftInit()
   tft.setRotation(1);
   tft.setSwapBytes(true);
   tft.fillScreen(TFT_BLACK);
+  tft.setFreeFont(&AndroDesaho3pt7b);
   ledcSetup(0, 5000, 8);
   ledcAttachPin(TFT_BL, 0);
   ledcWrite(0, 185);
@@ -158,7 +160,7 @@ void displayAndroDate(andro_time_t result)
 
   tft.setTextDatum(TL_DATUM);
   tft.setTextColor(TFT_GREEN, TFT_BLACK);
-  tft.setCursor(8, 60);
+  tft.setCursor(8, 72);
   tft.print(buffer2);
 }
 

@@ -70,6 +70,12 @@ void setup()
     unattendedInit();
   }
 
+  if (isCharging())
+  {
+    mdebugV("Connecting automatically.");
+    actionMokoshConnect();
+  }
+
   mdebugV("Go!");
 }
 

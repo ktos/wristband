@@ -57,6 +57,9 @@ void initButton()
 
 void handleUi()
 {
+  if (isCharging())
+    max_time_out = 1200000;
+
   if (millis() - time_out > max_time_out && !handlingAction && sleepy)
   {
     handleSleep();

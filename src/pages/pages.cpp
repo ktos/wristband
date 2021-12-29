@@ -94,11 +94,11 @@ void showPage()
   {
   case 0:
     max_time_out = 8000;
-    pageAndroClock(initialLoad);
+    pageClock(initialLoad);
     break;
   case 1:
     max_time_out = 15000;
-    pageClock(initialLoad);
+    pageAndroClock(initialLoad);
     break;
   case 2:
     max_time_out = 15000;

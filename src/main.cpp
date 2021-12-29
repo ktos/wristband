@@ -73,7 +73,7 @@ void setup()
   if (isCharging())
   {
     mdebugV("Connecting automatically.");
-    actionMokoshConnect();
+    //actionMokoshConnect();
   }
 
   mdebugV("Go!");

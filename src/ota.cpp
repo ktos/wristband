@@ -1,8 +1,8 @@
 #include "ota.hpp"
 
 void onOtaStarted()
-{
-    msgBig("OTA");
+{    
+    //msgBig("OTA");
 }
 
 void onOtaProgress(unsigned int progress, unsigned int total)

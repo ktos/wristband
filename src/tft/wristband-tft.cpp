@@ -9,7 +9,7 @@ void tftInit()
   tft.setRotation(1);
   tft.setSwapBytes(true);
   tft.fillScreen(TFT_BLACK);
-  tft.setFreeFont(&AndroDesaho3pt7b);
+  tft.setFreeFont(&AndroDesaho4pt7b);
   ledcSetup(0, 5000, 8);
   ledcAttachPin(TFT_BL, 0);
   ledcWrite(0, 185);
@@ -103,7 +103,7 @@ void msg(const char *message, uint16_t color)
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(color);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString(message, tft.width() / 2, tft.height() / 2, 2);
+  tft.drawString(message, tft.width() / 2, tft.height() / 2);
 }
 
 void msg(const char *message1, const char *message2, uint16_t color)
@@ -111,8 +111,8 @@ void msg(const char *message1, const char *message2, uint16_t color)
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(color);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString(message1, tft.width() / 2, tft.height() / 2 - 15, 2);
-  tft.drawString(message2, tft.width() / 2, tft.height() / 2 + 15, 2);
+  tft.drawString(message1, tft.width() / 2, tft.height() / 2 - 15);
+  tft.drawString(message2, tft.width() / 2, tft.height() / 2 + 15);
 }
 
 void tftSleep(bool showMsg)
@@ -145,12 +145,15 @@ void displayDate(const uint8_t day, const uint8_t month, const uint16_t year, bo
   sprintf(date, "%u-%02u-%02u", year, month, day);
   tft.setTextDatum(TL_DATUM);
   tft.setTextColor(TFT_GREEN, TFT_BLACK);
-  tft.setCursor(8, 65);
-  tft.print(date);
-  if (utc)
-  {
-    tft.print(" **UTC**");
-  }
+  
+  tft.drawString(date, 8, 65, 2);
+  
+  // tft.setCursor(8, 70);
+  // tft.print(date);
+  // if (utc)
+  // {
+  //   tft.print(" **UTC**");
+  // }
 }
 
 void displayAndroDate(andro_time_t result)
@@ -160,7 +163,7 @@ void displayAndroDate(andro_time_t result)
 
   tft.setTextDatum(TL_DATUM);
   tft.setTextColor(TFT_GREEN, TFT_BLACK);
-  tft.setCursor(8, 72);
+  tft.setCursor(8, 70);
   tft.print(buffer2);
 }
 
@@ -250,14 +253,14 @@ void drawBattery(float voltage, uint8_t percentage, bool charging)
   tft.setTextColor(TFT_WHITE);
   tft.setTextDatum(MC_DATUM);
   tft.setTextPadding(tft.textWidth(" 888% ", 2));
-  tft.drawString(String(percentage) + "%", width / 2 + originx, height / 2 + originy, 2);
+  tft.drawString(String(percentage) + "%", width / 2 + originx, height / 2 + originy);
 
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextDatum(BC_DATUM);
   String voltageInfo = String(voltageString) + "V";
   if (charging)
   {
-    voltageInfo += " Charging";
+    voltageInfo += " charging";
   }
   tft.drawString(voltageInfo, tft.width() / 2, tft.height());
 }

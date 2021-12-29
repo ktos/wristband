@@ -15,4 +15,4 @@ void increasePage();
 void showPage();
 void initButton();
 void handleAction();
-void actionMokoshConnect();
+void initMokosh();

@@ -13,24 +13,28 @@ bool handlingAction = false;
 bool initialLoad = true;
 bool sleepy = true; // princess in a demonic castle
 
+void initMokosh()
+{
+  Mokosh *mokosh = Mokosh::getInstance();
+
+  mdebugV("Setting up Wi-Fi connection");
+  mokosh->setupWiFiClient();
+  mokosh->connectWifi();
+  mokosh->setupRemoteDebug();
+  mokosh->setupMqttClient();
+  mokosh->hello();
+
+  mokosh->otaEvents.onStart = onOtaStarted;
+  mokosh->otaEvents.onProgress = onOtaProgress;
+  mokosh->setupOta();
+}
+
 void actionMokoshConnect()
 {
   if (sleepy)
   {
-    Mokosh *mokosh = Mokosh::getInstance();
-
     msgInfo("Setting up Mokosh", "Not sleepy");
-    mdebugV("Setting up Wi-Fi connection");
-    mokosh->setupWiFiClient();
-    mokosh->connectWifi();
-    mokosh->setupRemoteDebug();
-    mokosh->setupMqttClient();
-    mokosh->hello();
-
-    mokosh->otaEvents.onStart = onOtaStarted;
-    mokosh->otaEvents.onProgress = onOtaProgress;
-    mokosh->setupOta();
-
+    initMokosh();
     msgSuccess("Finished");
 
     sleepy = false;

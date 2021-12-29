@@ -72,8 +72,8 @@ void setup()
 
   if (isCharging())
   {
-    mdebugV("Connecting automatically.");
-    //actionMokoshConnect();
+    mdebugV("Connecting automatically, because charging.");
+    initMokosh();
   }
 
   mdebugV("Go!");

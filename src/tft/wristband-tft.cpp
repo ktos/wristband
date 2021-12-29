@@ -58,6 +58,14 @@ void msgBig(const char *message)
   tft.drawString(message, tft.width() / 2, tft.height() / 2, 4);
 }
 
+void msgBigAndro(uint16_t color, const char *message)
+{
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(color);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(message, tft.width() / 2, tft.height() / 2);
+}
+
 void msgError(const char *message)
 {
   msg(message, TFT_RED);

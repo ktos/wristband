@@ -16,3 +16,4 @@ void showPage();
 void initButton();
 void handleAction();
 void initMokosh();
+void forceInitialLoad();

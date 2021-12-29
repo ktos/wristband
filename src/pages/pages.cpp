@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <EasyButton.h>
 #include <Mokosh.hpp>
+#include <vector>
 #include "ota.hpp"
 #include "sleep.hpp"
 #include "pages.hpp"
@@ -26,7 +27,7 @@ void initMokosh()
 
   mokosh->otaEvents.onStart = onOtaStarted;
   mokosh->otaEvents.onProgress = onOtaProgress;
-  mokosh->setupOta();
+  mokosh->setupOta();  
 }
 
 void actionMokoshConnect()
@@ -45,7 +46,7 @@ void actionMokoshConnect()
     sleepy = true;
   }
 
-  delay(500);
+  delay(2000);
 }
 
 void initButton()
@@ -61,9 +62,6 @@ void initButton()
 
 void handleUi()
 {
-  if (isCharging())
-    max_time_out = 1200000;
-
   if (millis() - time_out > max_time_out && !handlingAction && sleepy)
   {
     handleSleep();
@@ -76,6 +74,12 @@ void handleUi()
       showPage();
     }
   }
+}
+
+void forceInitialLoad() 
+{
+  initialLoad = true;
+  time_out = millis();
 }
 
 void increasePage()
@@ -108,24 +112,24 @@ void showPage()
     max_time_out = 15000;
     pageBattery(initialLoad);
     break;
+  // case 3:
+  //   max_time_out = 60000;
+  //   pageBearing(initialLoad);
+  //   break;
+  // case 4:
+  //   max_time_out = 30000;
+  //   pageTemperature(initialLoad);
+  //   break;
+  // case 5:
+  //   max_time_out = 30000;
+  //   pageWifiScan(initialLoad);
+  //   break;
+  // case 6:
+  //   max_time_out = 30000;
+  //   pageMatrix(initialLoad);
+  //   break;
   case 3:
-    max_time_out = 60000;
-    pageBearing(initialLoad);
-    break;
-  case 4:
-    max_time_out = 30000;
-    pageTemperature(initialLoad);
-    break;
-  case 5:
-    max_time_out = 30000;
-    pageWifiScan(initialLoad);
-    break;
-  case 6:
-    max_time_out = 30000;
-    pageMatrix(initialLoad);
-    break;
-  case 7:
-    if (sleepy)
+    if (sleepy && !isCharging())
     {
       handleSleep();
     }
@@ -136,6 +140,10 @@ void showPage()
     }
     break;
   }
+
+  if (isCharging())
+    max_time_out *= 2;
+
   initialLoad = false;
 }
 

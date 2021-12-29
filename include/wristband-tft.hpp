@@ -36,3 +36,4 @@ void displayAndroDate(andro_time_t result);
 void beginPrintln(uint16_t color);
 void println(char *message);
 TFT_eSPI* getTft();
+void msgBigAndro(uint16_t color, const char *message);

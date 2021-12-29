@@ -12,6 +12,31 @@
 Mokosh m;
 bool unattended = false;
 
+void commandReceived(uint8_t *message, unsigned int length)
+{
+  char msg[32] = {0};
+  for (unsigned int i = 0; i < length; i++)
+  {
+    msg[i] = message[i];
+  }
+  msg[length + 1] = 0;
+
+  mdebugD("Command received: %s", msg);
+
+  String s = String(msg);
+
+  uint16_t c = TFT_WHITE;
+  if (s.startsWith("e")) {
+    c = TFT_BLUE;
+  } else if (s.startsWith("w")) {
+    c = TFT_YELLOW;
+  }
+
+  msgBigAndro(c, s.substring(2).c_str());
+  delay(2000);
+  forceInitialLoad();
+}
+
 void setup()
 {
   m.setDebugLevel(DebugLevel::VERBOSE)
@@ -20,6 +45,8 @@ void setup()
       ->setIgnoreConnectionErrors(true)
       ->setOta(true)
       ->setRebootOnError(true);
+
+  m.onCommand = commandReceived;
 
   // ATAKSAK
   // a goddess in Inuit mythology. She is the ruler of the sky,
